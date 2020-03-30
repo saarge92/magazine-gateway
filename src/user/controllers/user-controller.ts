@@ -1,8 +1,9 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, HttpStatus, Req } from "@nestjs/common";
 import { UserService } from "../service/user-service";
 import { RegisterDto } from "../dto/register-dto";
 import { IUserResponse } from "../dto/interfaces/IUserResponse-interface";
 import { Observable } from "rxjs";
+import { Request } from "express";
 
 /**
  * Controller for serving requests
@@ -24,6 +25,18 @@ export class UserController {
     public async registerUser(@Body() userData: RegisterDto): Promise<Observable<IUserResponse>> {
         const registerData = await this.userService.registerUser(userData);
         return registerData
+    }
+
+    /**
+     * Login user into system
+     * @param request Request body
+     * Should return data with user & token
+     */
+    @Post("/login")
+    @HttpCode(HttpStatus.OK)
+    public async loginUser(@Req() request: Request) {
+        const userData = await this.userService.loginUser(request.body as RegisterDto);
+        return userData;
     }
 }
 
